@@ -3,6 +3,11 @@
 <html>
 <head>
     <link rel="stylesheet" href="main.css" />
+    <script type="text/javascript">
+        window.globals = {
+            url: '<?php isset($_GET["site"])? $_GET["site"] : ""; ?>'
+        }
+    </script>
 </head>
 <body>
     <div id="menu">
@@ -94,6 +99,8 @@
         </div>
     </div>
     
+    <script src="sha512.js"></script>
+    <script src="forms.js"></script>
     <script src="base.js"></script>
 </body>
 </html>
