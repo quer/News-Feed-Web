@@ -1,6 +1,6 @@
 <template>
     <div id="menu">
-        <div class="roomListLogo" v-on:click="chanceChannel('')">
+        <div class="roomListLogo" v-on:click="chanceChannel('/')">
             <div class="roomListLogoInner">
                 <span class="badge badge-primary">10</span>
             </div>
