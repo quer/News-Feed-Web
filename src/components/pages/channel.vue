@@ -12,6 +12,7 @@
 </template>
 
 <script>
+    import { EventBus } from '../fun/event-bus.js';
     export default {
         name: 'Channel',
         data () {
@@ -40,19 +41,29 @@
                 /*this.$http.get(this.rssFeedUrl).then(response => {
                     this.decodeUrlData(response.data);
                 });*/
-                this.decodeUrlData();
+                this.decodeRssData();
             },
-            decodeUrlData: function (urlData) {
+            decodeRssData: function (urlData) {
                 for (var i = 0; i < 18; i++) {
                     this.rrsData.push({
                         image: 'http://imbo2.tv2.dk/users/editorial/images/fc04f0ed-a087-47ad-ac13-7b9ffdab0c28.jpg?t%5b%5d=tv2cropping:width=960,height=540&accessToken=28df2e554cef35de88133d9ef7c8dd83590b897f526e58a11ddd5ee123eaaec2',
-                        text: i+'Afhøringen af vidner i retssagen mod Peter Madsen fortsatte tirsdag i Københavns Byret.<br>Og for første gang var de vidner, som forsvaret har indkaldt, på listen. Et af forsvarets vidner er Peter Mad...'
+                        text: i+' - '+ this.$route.path +' Afhøringen af vidner i retssagen mod Peter Madsen fortsatte tirsdag i Københavns Byret.'
+                        +'Og for første gang var de vidner, som forsvaret har indkaldt, på listen. Et af forsvarets vidner er Peter Mad...'
                     })
                 }
+                EventBus.$emit('updateNrOnChannel', this.$route.path, 18);
             }
         },
         mounted: function (){
             this.loadChannelInfo()
+        },
+        beforeMount: function () {
+            console.log(this.$route.path);
+        },
+        watch: {
+            '$route' (to, from) {
+                console.log(to, this.$route.path);
+            }
         }
     }
 </script>
