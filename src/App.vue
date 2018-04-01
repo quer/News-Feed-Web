@@ -9,12 +9,26 @@
 
 <script>
 import Navbar from './components/Navbar.vue'
+import { EventBus } from './components/fun/event-bus.js';
 
 export default {
     name: 'App',
 
     components: {
         'app-navbar': Navbar
+    },
+    methods: {
+        loadChannels: function () {
+            this.$http.get('http://localhost/News-Feed/api/channels.php').then(response => {
+                console.log(response.data);
+                EventBus.$emit('updateChannels', response.data)
+            });
+        }
+    },
+    mounted: function (){
+        console.log("App");
+        this.loadChannels();
+        
     }
 }
 </script>

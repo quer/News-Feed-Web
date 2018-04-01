@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/pages/Home'
 import Login from '@/components/pages/Login'
-import Channel from '@/components/pages/Channel'
+import Channels from '@/components/pages/Channels'
+import Create from '@/components/pages/Create'
 
 Vue.use(Router)
 
@@ -20,9 +21,14 @@ export default new Router({
       component: Login
     },
     {
+      path: '/Create',
+      name: 'Create',
+      component: Create
+    },
+    {
       path: '*',
-      name: 'Channel',
-      component: Channel
+      name: 'Channels',
+      component: Channels
     }
   ]
 })

@@ -20,7 +20,7 @@
 
 <script>
 export default {
-    name: 'About',
+    name: 'Login',
     data () {
         return {
             error: '',

@@ -8,7 +8,8 @@
 		</div>
 		<div class="btn-group btn-group-lg" role="group" aria-label="Menu">
 			<button type="button" class="btn btn-primary" v-on:click="Login">Login</button>
-			<button type="button" class="btn btn-secondary" v-on:click="Register">Register</button>
+            <button type="button" class="btn btn-secondary" v-on:click="Register">Register</button>
+			<button type="button" class="btn btn-secondary" v-on:click="Create">Create</button>
 		</div>
 	</div>
 </template>
@@ -27,7 +28,10 @@
         	},
         	Register: function () {
         		this.$router.push('Register');
-        	}
+        	},
+            Create: function () {
+                this.$router.push('Create');
+            }
         }
     }
 </script>
