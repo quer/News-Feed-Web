@@ -1,8 +1,8 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header('Content-type: application/json');
+header('Content-type: application/xml');
 $json = array(
-	'rssFeedUrl' => 'https://www.dr.dk/nyheder/service/feeds/allenyheder', 
+	'rssFeedUrl' => 'http://localhost/News-Feed/api/rrsfeed', 
     'decode' => 'error');
 // beta 
 $jsonstring = json_encode($json);

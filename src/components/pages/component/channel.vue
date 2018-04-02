@@ -6,11 +6,11 @@
 </template>
 
 <script>
-    import { EventBus } from '../../fun/event-bus.js';
+    import { EventBus, XmlPaster } from '../../fun/event-bus.js';
     import rsscard from './rsscard.vue';
     export default {
         name: 'Channel',
-        props: ['name', 'icon', 'rssFeedUrl', 'decode'],
+        props: ['name', 'icon', 'rssFeedUrl', 'decode', 'loopTag'],
         data () {
             return {
                 rrsData: []
@@ -19,19 +19,30 @@
         components: { rsscard },
         methods: {
             updateRrs: function () {
-                console.log(this.rssFeedUrl);
-                this.$http.get(this.rssFeedUrl).then(response => {
+                this.$http.get("http://localhost/News-Feed/api/rrsfeed.php?link=" + encodeURIComponent(this.rssFeedUrl)).then(response => {
                     this.decodeRssData(response.bodyText);
                 });
             },
             decodeRssData: function (urlData) {
                 //console.info(urlData);
-                for (var i = 0; i < 18; i++) {
-                    this.rrsData.push({
-                        image: 'http://imbo2.tv2.dk/users/editorial/images/fc04f0ed-a087-47ad-ac13-7b9ffdab0c28.jpg?t%5b%5d=tv2cropping:width=960,height=540&accessToken=28df2e554cef35de88133d9ef7c8dd83590b897f526e58a11ddd5ee123eaaec2',
-                        text: i+' - '+ this.name +' Afhøringen af vidner i retssagen mod Peter Madsen fortsatte tirsdag i Københavns Byret.'
-                        +'Og for første gang var de vidner, som forsvaret har indkaldt, på listen. Et af forsvarets vidner er Peter Mad...'
-                    })
+                var parser = new DOMParser();
+                var xmlDom = parser.parseFromString(urlData, "text/xml");
+                var loops = XmlPaster.GetElementsByTagNames(xmlDom, this.loopTag, 'loops');
+                for (var i = 0; i < loops.length; i++) {
+                    var loopItem = loops[i];
+                    var title = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.decode.title.fieldValue, this.decode.title.attrTag, 'title');
+                    var image = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.decode.image.fieldValue, this.decode.image.attrTag, 'image');
+                    var link = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.decode.link.fieldValue, this.decode.link.attrTag, 'link');
+                    var DateObj = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.decode.DateFiled.fieldValue, this.decode.DateFiled.attrTag, 'DateObj');
+
+                    for (var i = 0; i < 18; i++) {
+                        this.rrsData.push({
+                            image: image,
+                            text: title,
+                            link: link,
+                            DateObj: DateObj
+                        })
+                    }
                 }
             }
         },

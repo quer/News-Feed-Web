@@ -28,7 +28,9 @@ export default {
     mounted: function (){
         console.log("App");
         this.loadChannels();
-        
+        EventBus.$on('forceUpdateChannels', function () {
+            this.loadChannels();
+        })
     }
 }
 </script>

@@ -1,26 +1,42 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header('Content-type: application/json');
+
+include_once '../includes/db_connect.php';
+include_once '../includes/functions.php';
 $json = array();
-/*$result = mysqli_query ($connection, $query);
-while($row = mysqli_fetch_array ($result))     
-{
-    $bus = array(
-        'latitude' => $row['lat'],
-        'longitude' => $row['lng'],
-        'icon' => './images/' . $row['busColor'] . '.png'
-    );
-    array_push($json, $bus);
-}*/
-// beta
-for ($i=0; $i < 10; $i++) { 
-	$bus = array(
-		'name' => $i.'test', 
-	    'icon' => 'https://cdn.discordapp.com/icons/377117180766060566/ac44aada691596882d1850f4fc5f007a.png'
-	);
-	array_push($json, $bus);
+$result = $mysqli->query("SELECT `id`, `loopTag`, `name`, `feedUrl`, `mainImage` FROM `feeds`");
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_object()) {
+        $bus = array(
+			'name' => $row->name, 
+		    'icon' => $row->mainImage,
+		    'rssFeedUrl' => $row->feedUrl, 
+	    	'decode' => getTags($mysqli, $row->id),
+	    	'loopTag' => $row->loopTag
+		);
+
+		array_push($json, $bus);
+    }
 }
 $jsonstring = json_encode($json);
 echo $jsonstring;
 die();
+
+function getTags($mysqli, $id)
+{
+	$returnList = array();
+	$result = $mysqli->query("SELECT `id`, `attrTag`, `fieldName`, `fieldValue`, `feeds_id` FROM `attr` WHERE `feeds_id` = '". $id. "'");
+
+	if ($result->num_rows > 0) {
+	    while ($row = $result->fetch_object()) {
+	    	$returnList[$row->fieldName] = array(
+	    		'fieldValue' => $row->fieldValue, 
+	    		'attrTag' => $row->attrTag
+	    	);
+	    }
+	}
+	return $returnList;
+}
 ?>

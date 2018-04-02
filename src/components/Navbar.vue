@@ -25,10 +25,8 @@ export default {
         }
     },
     methods: {
-        loadChannels: function () {
-            this.$http.get('http://localhost/News-Feed/api/channels.php').then(response => {
-                this.channels = response.data;
-            });
+        setChannels: function (ajaxData) {
+            this.channels = ajaxData;
         },
         chanceChannel: function (channel) {
             this.$router.push(channel);
@@ -68,9 +66,11 @@ export default {
         }
     },
     mounted: function (){
-        this.loadChannels();
         EventBus.$on('updateNrOnChannel', (channel, nr) => {
             this.setChannelBadge(channel, nr);
+        })
+        EventBus.$on('updateChannels', (ajaxData) => {
+            this.setChannels(ajaxData)
         })
     }
 }

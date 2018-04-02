@@ -18,21 +18,19 @@
         methods: {
             setChannels: function (roomsData) {
                 console.log("setChannels");
-                console.log(roomsData);
                 this.rooms = [];
                 for (var i = 0; i < roomsData.length; i++) {
                     var room = roomsData[i];
-                    this.addChannel(room.name, room.icon, room.rssFeedUrl, room.decode);
+                    this.addChannel(room.name, room.icon, room.rssFeedUrl, room.loopTag, room.decode);
                 }
             },
-            addChannel: function (name, icon, rssFeedUrl, decode) {
+            addChannel: function (name, icon, rssFeedUrl, loopTag, decode) {
                 var ComponentClass = Vue.extend(Channel)
                 var instance = new ComponentClass({
-                    propsData: { name, icon, rssFeedUrl, decode }
+                    propsData: { name, icon, rssFeedUrl, decode, loopTag}
                 })
                 instance.$mount()
                 this.rooms.push({name: name, instance, instance})
-                this.$refs.channel.appendChild(instance.$el)
             },
             chanceChannel: function () {
                 var channelName = this.getCleanRoutePath();

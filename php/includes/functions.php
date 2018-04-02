@@ -178,4 +178,52 @@ function esc_url($url) {
         return $url;
     }
 }
+function addRrsfeed($mysqli, $loopTag, $name, $feedUrl, $image, $title, $link, $DateFiled, $mainImage) {
+    try {
+        $mysqli->autocommit(FALSE);
+        //$mysqli->begin_transaction();
+        $sql = "INSERT INTO `feeds`(`loopTag`, `name`, `feedUrl`, `mainImage`, `update_time`, `create_time`) VALUES (?,?,?,?,?,?)";
+        $stmt = $mysqli->prepare($sql);
+        $stmt->bind_param('ssssss', $loopTag, $name, $feedUrl, $mainImage, $update_time, $create_time);
+        $update_time = date("d/m/y h:i:s");
+        $create_time = date("d/m/y h:i:s");
+        $stmt->execute();
+        $feedID = $stmt->insert_id;
+     
+        $tagsList = array(
+            'image' => $image, 
+            'title' => $title,
+            'link' => $link, 
+            'DateFiled' => $DateFiled
+        );
+        echo "<pre>";
+        print_r($feedID);
+        echo "</pre>";
+        $sql = "INSERT INTO `attr`(`attrTag`, `fieldName`, `fieldValue`, `feeds_id`) VALUES (?,?,?,?)";
+        $stmt2 = $mysqli->prepare($sql);
+        $stmt2->bind_param('ssss', $attrTag, $key, $arrTag, $feedID);
+
+        foreach ($tagsList as $key => $arr) {
+            $arrTag = $arr->tag;
+            $attrTag = $arr->attr != null? $arr->attrTag : null;
+            if(!$stmt2->execute())
+            {
+                // rollback if prep stat execution fails
+                throw new Exception($stmt2->error, 1);
+            }
+        }
+        $mysqli->commit();
+        
+        printf("Errormessage: %s\n", $mysqli->error);
+        return array('success' => 1);
+
+    } catch (Exception $e) {
+        printf("Errormessage: %s\n\n\n", $mysqli->error);
+        printf("Errormessage2: %s\n", $e);
+        // An exception has been thrown
+        // We must rollback the transaction
+        $mysqli->rollback();
+        return array('success' => 3);
+    }
+}
 ?>
