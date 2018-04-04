@@ -5,66 +5,25 @@
 
 <script>
     import { EventBus } from '../fun/event-bus.js';
-    import Channel from './component/channel.vue';
     export default {
         name: 'Channels',
         data () {
             return {
-                rooms: [],
-                activeRoomIndex: 0,
-                loadet: false
+                channelObj: null
             }
         },
         methods: {
-            setChannels: function (roomsData) {
-                console.log("setChannels");
-                this.rooms = [];
-                for (var i = 0; i < roomsData.length; i++) {
-                    var room = roomsData[i];
-                    this.addChannel(room.name, room.icon, room.rssFeedUrl, room.loopTag, room.decode);
-                }
-            },
-            addChannel: function (name, icon, rssFeedUrl, loopTag, decode) {
-                var ComponentClass = Vue.extend(Channel)
-                var instance = new ComponentClass({
-                    propsData: { name, icon, rssFeedUrl, decode, loopTag}
-                })
-                instance.$mount()
-                this.rooms.push({name: name, instance, instance})
-            },
-            chanceChannel: function () {
-                var channelName = this.getCleanRoutePath();
-                console.log("chanceChannel", channelName);
-                var channelInstance = this.getRoomInstance(channelName);
-                if(channelInstance != null){
-                    this.$refs.channel.innerHTML = "";
-                    this.$refs.channel.appendChild(channelInstance.$el)
-                }
-            },
-            getRoomInstance: function (channelName) {
-                for (var i = 0; i < this.rooms.length; i++) {
-                    if(this.rooms[i].name == channelName){
-                        return this.rooms[i].instance;
-                    }
-                }
-                return null;
-            },
-            getCleanRoutePath: function () {
-                var path = this.$route.path;
-                while(path.charAt(0) === '/')
-                {
-                    path = path.substr(1);
-                }
-                return path;
+            chanceChannel: function (channelObj) {
+                this.channelObj = channelObj;
+                this.$refs.channel.innerHTML = "";
+                this.$refs.channel.appendChild(channelObj.$el)
             }
         },
         mounted: function (){
-            EventBus.$on('updateChannels', (ajaxData) => {
-                this.setChannels(ajaxData)
-            })
-        },
-        watch: {
-            '$route': 'chanceChannel'
+            EventBus.$on('activeChannelObj', function (channelObj) {
+                console.log("activeChannelObj");
+                this.chanceChannel(channelObj);
+            }.bind(this));
         }
     }
 </script>

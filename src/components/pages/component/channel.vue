@@ -36,14 +36,16 @@
                     var DateObj = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.decode.DateFiled.fieldValue, this.decode.DateFiled.attrTag, 'DateObj');
 
                     
-                        this.rrsData.push({
-                            image: image,
-                            text: title,
-                            link: link,
-                            DateObj: DateObj
-                        })
-                    
+                    this.rrsData.push({
+                        image: image,
+                        text: title,
+                        link: link,
+                        DateObj: DateObj
+                    })
                 }
+                EventBus.$emit('badgeUpdate-' + this.name, loops.length);
+                EventBus.$emit('doneLoading-' + this.name);
+
             }
         },
         mounted: function (){

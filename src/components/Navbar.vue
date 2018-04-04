@@ -5,18 +5,15 @@
                 <span class="badge badge-primary">10</span>
             </div>
         </div>
-        <div class="roomListLogo" v-for="channel in channels" v-on:click="chanceChannel(channel.name)">
-            <div class="roomListLogoInner" :style="'background-image: url(\'' +channel.icon + '\');'" :alt ="channel.name">
-                <span class="badge badge-primary" v-if="'badge' in channel">{{ channel.badge }}</span>
-            </div>
-        </div>
+        <menucard v-for="(channel, index) in channels" :key="index" :name="channel.name" :icon="channel.icon" :rssFeedUrl="channel.rssFeedUrl" :loopTag="channel.loopTag" :decode="channel.decode"/>
+        
         <div class="roomSebrat">
             
         </div>
     </div>
 </template>
 <script>
-import { EventBus } from './fun/event-bus.js';
+import menucard from './menucard.vue';
 export default {
     name: 'Navbar',
     data () {
@@ -24,14 +21,30 @@ export default {
             channels: []
         }
     },
+    components: {menucard},
     methods: {
         setChannels: function (ajaxData) {
             this.channels = ajaxData;
         },
-        chanceChannel: function (channel) {
-            this.$router.push(channel);
-        },
-        getChannel: function (name) {
+        loadChannels: function () {
+            this.$http.get('http://localhost/News-Feed/api/channels.php').then(response => {
+                this.setChannels(response.data);
+            });
+        }
+    },
+    mounted: function (){
+        this.loadChannels();
+    }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+
+</style>
+
+<!--
+    getChannel: function (name) {
             while(name.charAt(0) === '/')
             {
                 name = name.substr(1);
@@ -57,26 +70,10 @@ export default {
         },
         setChannelBadge: function (channel, number) {
             console.log(channel, number);
-            var channelIndex = this.getChannelIndex(channel);
-            if(channelIndex != null){
-                this.$set(this.channels[channelIndex], 'badge', number);
+            var channel = this.getChannel(channel);
+            if(channel != null){
+                this.$set(channel, 'badge', number);
             }else{
                 console.error("error update badge")
             }
-        }
-    },
-    mounted: function (){
-        EventBus.$on('updateNrOnChannel', (channel, nr) => {
-            this.setChannelBadge(channel, nr);
-        })
-        EventBus.$on('updateChannels', (ajaxData) => {
-            this.setChannels(ajaxData)
-        })
-    }
-}
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
+        }-->

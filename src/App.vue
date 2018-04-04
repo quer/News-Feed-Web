@@ -18,19 +18,20 @@ export default {
         'app-navbar': Navbar
     },
     methods: {
-        loadChannels: function () {
-            this.$http.get('http://localhost/News-Feed/api/channels.php').then(response => {
-                console.log(response.data);
-                EventBus.$emit('updateChannels', response.data)
-            });
+        activeView: function (to, from) {
+            console.log("activeView", this.fromPathToName(from.path), this.fromPathToName(to.path))
+            EventBus.$emit('activeChannel', this.fromPathToName(from.path), this.fromPathToName(to.path));
+        },
+        fromPathToName:function (name) {
+            while(name.charAt(0) === '/')
+            {
+                name = name.substr(1);
+            }
+            return name;
         }
     },
-    mounted: function (){
-        console.log("App");
-        this.loadChannels();
-        EventBus.$on('forceUpdateChannels', function () {
-            this.loadChannels();
-        })
+    watch: {
+        '$route': 'activeView'
     }
 }
 </script>
