@@ -162,11 +162,12 @@ export default {
             for (var i = 0; i < loops.length; i++) {
                 var loopItem = loops[i];
                 if(i == 13){
-                    console.log(loopItem);                }
-                var title = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.stage2.title, '', '', 'title');
-                var image = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.stage2.image, this.stage2.attr, this.stage2.attrTag, 'image');
-                var link = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.stage2.link, '', '', 'link');
-                var DateObj = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.stage2.Date, '', '', 'DateObj');
+                    console.log(loopItem);
+                }
+                var title = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.stage2.title, null, 'title');
+                var image = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.stage2.image, this.stage2.attr == 'attr'? this.stage2.attrTag : null, 'image');
+                var link = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.stage2.link, null, 'link');
+                var DateObj = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.stage2.Date, null, 'DateObj');
                 this.validTest.imageResult.push(image);
                 this.validTest.titleResult.push(title);
                 this.validTest.urlResult.push(link);

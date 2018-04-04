@@ -35,14 +35,14 @@
                     var link = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.decode.link.fieldValue, this.decode.link.attrTag, 'link');
                     var DateObj = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, this.decode.DateFiled.fieldValue, this.decode.DateFiled.attrTag, 'DateObj');
 
-                    for (var i = 0; i < 18; i++) {
+                    
                         this.rrsData.push({
                             image: image,
                             text: title,
                             link: link,
                             DateObj: DateObj
                         })
-                    }
+                    
                 }
             }
         },
