@@ -2,7 +2,9 @@
     <div id="app">
         <app-navbar/>
         <div id="content">
-            <router-view/>
+            <keep-alive>
+                <router-view/>
+            </keep-alive>
         </div>
     </div>
 </template>
@@ -52,31 +54,6 @@ body {
     float: left;
     overflow-y: auto;
     background: #000;
-    .roomListLogo {
-        width: 70px;
-        height: 70px;
-        padding: 10px 0 10px 10px;
-        .roomListLogoInner {
-            background-repeat: no-repeat;
-            background-size: 50px 50px;
-            color: #fff;
-            display: block;
-            height: 50px;
-            width: 50px;
-            background-clip: padding-box;
-            background-position: 50%;
-            cursor: pointer;
-            text-decoration: none;
-            transition: opacity .5s,color .5s;
-            border-radius: 25px;
-            position: relative;
-            .badge {
-                position: absolute;
-                bottom: 0px;
-                right: 0px;
-            }
-        }
-    }
     .roomSebrat {
         background: none;
         height: 2px;
@@ -91,6 +68,31 @@ body {
             position: absolute;
             right: 20%;
             top: 0;
+        }
+    }
+}
+.roomListLogo {
+    width: 70px;
+    height: 70px;
+    padding: 10px 0 10px 10px;
+    .roomListLogoInner {
+        background-repeat: no-repeat;
+        background-size: 50px 50px;
+        color: #fff;
+        display: block;
+        height: 50px;
+        width: 50px;
+        background-clip: padding-box;
+        background-position: 50%;
+        cursor: pointer;
+        text-decoration: none;
+        transition: opacity .5s,color .5s;
+        border-radius: 25px;
+        position: relative;
+        .badge {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
         }
     }
 }

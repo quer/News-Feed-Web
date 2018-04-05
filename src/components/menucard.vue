@@ -44,6 +44,7 @@
                 if(to == this.name){
                     this.active = true;
                     console.log("active", this.name);
+                    EventBus.$emit('activeChannelName', this.name);
                     EventBus.$emit('activeChannelObj', this.channelObj);
                 }else{
                     this.active = false;
@@ -67,7 +68,5 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.active {
-    background-color:wheat;
-}
+
 </style>
