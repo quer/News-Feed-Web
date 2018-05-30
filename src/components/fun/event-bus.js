@@ -32,7 +32,7 @@ export const XmlPaster = {
     	if(attrTag == null){
     		return $patchObj.html();
     	}else{
-    		return $patchObj.attr(attrTag);
+    		return $patchObj.attr(attrTag+"");
     	}
 
     },
@@ -45,10 +45,61 @@ export const XmlPaster = {
     		return this.GetHtmlTagFromXmlObj(currentXmlObj, jqueryParts, attrTag, type);
     	}else{
     		if(attrTag != null){
-    			return currentXmlObj[0].getAttribute(attrTag);
+    			return currentXmlObj[0].getAttribute(attrTag+"");
     		}else{
 	    		return this.getNodeValue(currentXmlObj, type);
     		}
     	}
     }
+};
+export const BaseUrl = 'stojier.dk';
+export const BaseFeedUrlTag = 'f/';
+export const RrsData = {
+    
+    decodeRssData: function (urlData, channel, LasatFetchDateTime) {
+        var dateObject = { currentFetch: null, dateLastFetch: LasatFetchDateTime }
+        var rrsData = [];
+        var parser = new DOMParser();
+        var xmlDom = parser.parseFromString(urlData, "text/xml");
+        var loops = XmlPaster.GetElementsByTagNames(xmlDom, channel.loopTag, 'loops');
+        for (var i = 0; i < loops.length; i++) {
+            var loopItem = loops[i];
+            var title = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, channel.decode.title.fieldValue+"", channel.decode.title.attrTag, 'title');
+            var image = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, channel.decode.image.fieldValue+"", channel.decode.image.attrTag, 'image');
+            var link = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, channel.decode.link.fieldValue+"", channel.decode.link.attrTag, 'link');
+            var DateObj = XmlPaster.GetStaticValueFromXmlTreePath(loopItem, channel.decode.DateFiled.fieldValue+"", channel.decode.DateFiled.attrTag, 'DateObj');
+
+            if(this.isDateNew(DateObj, dateObject)){
+                rrsData.push({
+                    image: image,
+                    text: title,
+                    link: link,
+                    DateObj: DateObj
+                })
+            }
+        }
+        return {rrsData: rrsData, lastFetchData: dateObject.currentFetch}
+    },
+    lastData: function (DateObj, dateObject) {
+        if(dateObject.currentFetch != null){
+            if(dateObject.currentFetch < DateObj){
+                dateObject.currentFetch = DateObj;
+            }
+        }else{
+            dateObject.currentFetch = DateObj;
+        }
+    },
+    isDateNew: function (DateObj, dateObject) {
+        if(dateObject.dateLastFetch != null){
+            var date = new Date(DateObj);
+            if(dateObject.dateLastFetch < date){
+                this.lastData(date, dateObject);
+                return true;
+            }
+        }else{
+            this.lastData(new Date(DateObj), dateObject);
+            return true;
+        }
+        return false;
+    },
 }

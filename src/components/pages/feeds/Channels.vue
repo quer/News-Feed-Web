@@ -1,29 +1,35 @@
 <template>
-    <div class="row" ref="channel">
+    <div>
+        <ChannelNavbar />
+        <div class="row" v-if="rrsData != null">
+            <rsscard v-for="(item, index) in rrsData" :key="index" :text="item.text" :image="item.image" :convertImageValue="convertImage">
+            </rsscard>
+        </div>
+        <div id="" v-else> 
+            <i class="fa fa-spinner fa-spin spinnerCss" aria-hidden="true"></i>
+        </div>
     </div>
 </template>
 
 <script>
-    import { EventBus } from '../fun/event-bus.js';
+    import { EventBus } from '../../fun/event-bus.js';
+    import rsscard from './component/rsscard.vue';
+    import ChannelNavbar from './component/ChannelNavbar.vue';
     export default {
         name: 'Channels',
         data () {
             return {
-                channelObj: null
+                test:"test"
             }
         },
-        methods: {
-            chanceChannel: function (channelObj) {
-                this.channelObj = channelObj;
-                this.$refs.channel.innerHTML = "";
-                this.$refs.channel.appendChild(channelObj.$el)
+        components: { rsscard, ChannelNavbar },
+        computed: {
+            rrsData () {
+                return this.$store.getters.ActiveChannelFeed;
+            },
+            convertImage (){
+                return this.$store.getters.ActiveChannelconvertImage;
             }
-        },
-        mounted: function (){
-            EventBus.$on('activeChannelObj', function (channelObj) {
-                console.log("activeChannelObj");
-                this.chanceChannel(channelObj);
-            }.bind(this));
         }
     }
 </script>

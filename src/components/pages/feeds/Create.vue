@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { XmlPaster } from '../fun/event-bus.js';
+import { XmlPaster } from '../../fun/event-bus.js';
 export default {
     name: 'Create',
     data () {

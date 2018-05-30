@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    import { EventBus } from '../fun/event-bus.js';
+    import { EventBus } from '../../fun/event-bus.js';
     export default {
         name: 'Home',
         data () {
