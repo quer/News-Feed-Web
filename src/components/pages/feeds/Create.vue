@@ -19,6 +19,10 @@
                         <label for="Image">Image</label>
                         <input type="text" class="form-control" id="Image" placeholder="eks.." v-model="stage1.Image">
                     </div>
+                    <div class="form-group">
+                        <label for="Image">Parent channel</label>
+                        <input type="text" class="form-control" id="Image" placeholder="eks.." v-model="stage1.ParentChannel">
+                    </div>
                     <button type="submit" class="btn btn-primary" @click="NextStep()">Next Step</button>
                 </div>
                 <div class="col-md-6">
@@ -88,7 +92,7 @@
 </template>
 
 <script>
-import { XmlPaster } from '../../fun/event-bus.js';
+import { XmlPaster, BaseUrl  } from '../../fun/event-bus.js';
 export default {
     name: 'Create',
     data () {
@@ -98,7 +102,8 @@ export default {
             stage1: {
                 rssUrl: "https://www.dr.dk/nyheder/service/feeds/allenyheder",
                 name:"test",
-                Image:"https://digitalt.tv/wp-content/uploads/2017/10/dr1logo.png"
+                Image:"https://digitalt.tv/wp-content/uploads/2017/10/dr1logo.png",
+                ParentChannel: null
             },
             stage2: {
                 loopTag: 'item',
@@ -128,7 +133,7 @@ export default {
                 if(this.stage1.rssUrl == "" || this.stage1.name == ""){
                     this.error = "fill all fields";
                 }else{
-                    this.$http.get("http://localhost/News-Feed/api/rrsfeed.php?link=" + encodeURIComponent(this.stage1.rssUrl)).then(response => {
+                    this.$http.get(BaseUrl + "/api/rrsfeed.php?link=" + encodeURIComponent(this.stage1.rssUrl)).then(response => {
                         //console.log(response.bodyText);
                         this.urlFetchData = response.bodyText;
                         this.stage = 2;
@@ -144,9 +149,10 @@ export default {
                         Date: {tag: this.stage2.Date, attr:null, attrTag: null},
                         rssUrl: this.stage1.rssUrl,
                         name: this.stage1.name,
-                        mainImage: this.stage1.Image
+                        mainImage: this.stage1.Image,
+                        parentChannel: this.stage1.ParentChannel
                     }
-                    this.$http.post("http://localhost/News-Feed/api/addRrsfeed.php", {data:JSON.stringify(ObjToSend)}, {emulateJSON:true}).then(response => {
+                    this.$http.post(BaseUrl+"/api/addRrsfeed.php", {data:JSON.stringify(ObjToSend)}, {emulateJSON:true}).then(response => {
                         if(response.data.success){
                             EventBus.$emit('forceUpdateChannels');
                         }

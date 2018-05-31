@@ -13,10 +13,15 @@ import { EventBus, RrsData, BaseUrl } from './components/fun/event-bus.js';
 
 export default {
     name: 'App',
-    data : {
-        intervalMain: null,
-        intervalSecond: null,
-        intervalThird: null
+    data () {
+        return {  
+            intervalMain: null,
+            mainLoopIndex: null,
+            intervalSecond: null,
+            secondLoopIndex: null,
+            intervalThird: null,
+            thirdLoopIndex: null
+        }
     },
     components: {
         'app-navbar': SideNavbar
@@ -59,7 +64,11 @@ export default {
         loadChannelsFeedsAjex: function (name, channel) {
             this.$http.get(BaseUrl + "/api/rrsfeed.php?link=" + encodeURIComponent(channel.rssFeedUrl)).then(response => {
                 var feedData = RrsData.decodeRssData(response.bodyText, channel, channel.LastFetchDateTime);
-                this.$store.commit('updateChannel', { feedData: feedData, name: name });
+                console.log("feed ajax - " + name + " -- " + feedData.rrsData.length + " -- " + feedData.lastFetchData);
+                if(feedData.rrsData.length > 0){
+
+                    this.$store.commit('updateChannel', { feedData: feedData, name: name });
+                }
             });
         },
         setChannels: function (ajaxData) {
@@ -74,40 +83,76 @@ export default {
             });
         },
         startLoop: function () {
+            const self = this;
             if(this.intervalMain == null){
                 this.intervalMain = setInterval(function(){
-                    this.intervalMainFun();
+                    self.intervalMainFun();
                 }.bind(this), this.feedTime.main);
             }
             if(this.intervalSecond == null){
                 this.intervalSecond = setInterval(function(){
-                    this.intervalSecondFun();
+                    self.intervalSecondFun();
                 }.bind(this), this.feedTime.second);
             }
             if(this.intervalThird == null){
                 this.intervalThird = setInterval(function(){
-                    this.intervalThirdFun();
+                    self.intervalThirdFun();
                 }.bind(this), this.feedTime.third);
             }
         },
         intervalMainFun: function () {
-            console.log("runloop main");
-            var nextIndex = this.$store.getters.GetNextMainLoopIndex;
+            console.log("Main " + this.mainLoopIndex, this.MainLoopsToIndex);
+            var nextIndex = this.getNextIndex(this.mainLoopIndex, this.MainLoopsToIndex);
+            console.log("runloop main" + nextIndex);
 
-
-            var channelObjectForLoop = this.$store.getters.GetLoopObjectForMain(nextIndex);
-            if(channelObjectForLoop != null){
-                this.loadChannelsFeedsAjex(channelObjectForLoop.name, channelObjectForLoop.channel);
+            if(nextIndex !== null){
+                var channelObjectForLoop = this.$store.getters.GetLoopObjectForMain(nextIndex);
+                if(channelObjectForLoop != null){
+                    this.loadChannelsFeedsAjex(channelObjectForLoop.name, channelObjectForLoop.channel);
+                }
+                this.mainLoopIndex = nextIndex;
             }
-            this.$store.commit("SetNextMainLoopIndex", nextIndex);
-
-            
         },
         intervalSecondFun: function () {
-            console.log("runloop Second");
+            console.log("Second " + this.secondLoopIndex, this.SecondLoopsToIndex);
+            var nextIndex = this.getNextIndex(this.secondLoopIndex, this.SecondLoopsToIndex);
+            console.log("runloop second" + nextIndex);
+
+            if(nextIndex !== null){
+                var channelObjectForLoop = this.$store.getters.GetLoopObjectForSecond(nextIndex);
+                if(channelObjectForLoop != null){
+                    this.loadChannelsFeedsAjex(channelObjectForLoop.name, channelObjectForLoop.channel);
+                }
+                this.secondLoopIndex = nextIndex;
+            }
         },
         intervalThirdFun: function () {
-            console.log("runloop Third");
+            console.log("Third " + this.thirdLoopIndex, this.ThirdLoopsToIndex);
+            var nextIndex = this.getNextIndex(this.thirdLoopIndex, this.ThirdLoopsToIndex);
+            console.log("runloop third" + nextIndex);
+
+            if(nextIndex !== null){
+                var channelObjectForLoop = this.$store.getters.GetLoopObjectForThird(nextIndex);
+                if(channelObjectForLoop != null){
+                    this.loadChannelsFeedsAjex(channelObjectForLoop.name, channelObjectForLoop.channel);
+                }
+                this.thirdLoopIndex = nextIndex;
+            }
+        },
+        getNextIndex: function (currentIndex, maxIndexs) {
+            if(maxIndexs > 0){
+                if(currentIndex === null){
+                    return 0;
+                }else{
+                    if(currentIndex + 1 == maxIndexs){
+                        return 0;
+                    }else{
+                        return ++currentIndex;
+                    }
+                }
+            }else{
+                return null;
+            }
         }
     },
     watch: {
@@ -116,6 +161,15 @@ export default {
     computed: {
         feedTime(){
             return this.$store.getters.GetLoopTime;
+        },
+        MainLoopsToIndex(){
+            return this.$store.getters.GetMainLoopIndexs;
+        },
+        SecondLoopsToIndex(){
+            return this.$store.getters.GetSecondLoopIndexs;
+        },
+        ThirdLoopsToIndex(){
+            return this.$store.getters.GetThirdLoopIndexs;
         }
     },
     mounted: function () {

@@ -1,5 +1,5 @@
 <template>
-    <div class="col-md-2 nopadding">
+    <div class="col-md-2 nopadding" v-on:click="ToNews">
         <div class="newsItem">
             <div class="image" :style="'background-image: url(\'' + convertImage() + '\');'"></div>
             <div class="headline">{{ text }}</div>
@@ -10,7 +10,7 @@
 <script>
     export default {
         name: 'Rsscard',
-        props: ['text', 'image', 'convertImageValue'],
+        props: ['text', 'image', 'convertImageValue', 'link'],
         data () {
             return {
                 test:"test"
@@ -24,6 +24,9 @@
                 else{
                     return this.image;
                 }
+            },
+            ToNews: function() {
+                window.open(this.link);
             }
         }
     }
@@ -31,4 +34,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.col-md-2.nopadding{
+    cursor: pointer;
+}
 </style>

@@ -2,7 +2,7 @@
     <div>
         <ChannelNavbar />
         <div class="row" v-if="rrsData != null">
-            <rsscard v-for="(item, index) in rrsData" :key="index" :text="item.text" :image="item.image" :convertImageValue="convertImage">
+            <rsscard v-for="(item, index) in rrsData" :key="index" :text="item.text" :image="item.image" :convertImageValue="convertImage" :link="item.link">
             </rsscard>
         </div>
         <div id="" v-else> 

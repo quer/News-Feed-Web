@@ -56,25 +56,14 @@ function shuffle(a) {
     }
     return a;
 }
-function GetNextChannelsLoopQueIndex(channelsLoopQue) {
-	if(channelsLoopQue.index == null){
-		return 0;
-	}else{
-		if(channelsLoopQue.index + 1 >=  channelsLoopQue.list.length){
-			return 0;
-		}else{
-			return ++channelsLoopQue.index;
-		}
-	}
-}
 export default new Vuex.Store({
 	state: {
 		channels: [], //{ "name": "", "icon": "","rssFeedUrl": "","decode": {},"loopTag": "item","convertImage": "1","childFeeds": [ ...self]} and {LastFetchDateTime: null, feedItem: []} if have feed 
 		channelsLoopQue: {
 			isRuning: false,
-			main: { index: null, list: [], loopTime: 60000 },
-			second: { index: null, list: [], loopTime: 120000 },
-			third: { index: null, list: [], loopTime: 240000 }
+			main: { list: [], loopTime: 6000 },
+			second: { list: [], loopTime: 12000 },
+			third: { list: [], loopTime: 24000 }
 		},
 		activeChannel: {
 			main: null,
@@ -154,6 +143,7 @@ export default new Vuex.Store({
 				return false;
 			}
 		},
+
 		ActiveMainChannelName: (state, getters) => {
 			var mainActiveChannel = getters.ActiveMainChannel;
 			return mainActiveChannel != null? mainActiveChannel.name : ""; 
@@ -171,9 +161,8 @@ export default new Vuex.Store({
 			}
 			return returnObj;
 		},
-		GetNextMainLoopIndex: (state) => {
-			var nextIndex = GetNextChannelsLoopQueIndex(state.channelsLoopQue.main);
-			return nextIndex;
+		GetMainLoopIndexs: (state) => {
+			return state.channelsLoopQue.main.list.length;
 		},
 		GetLoopObjectForMain: (state, getters) => (index) => {
 			var name = state.channelsLoopQue.main.list[index];
@@ -182,13 +171,25 @@ export default new Vuex.Store({
 			}
 			return {name: name, channel: getters.channel(name)};
 		},
-		GetNextSecondLoopIndex: (state) => {
-			var nextIndex = GetNextChannelsLoopQueIndex(state.channelsLoopQue.second);
-			return nextIndex;
+		GetSecondLoopIndexs: (state) => {
+			return state.channelsLoopQue.second.list.length;
 		},
-		GetNextThirdLoopIndex: (state) => {
-			var nextIndex = GetNextChannelsLoopQueIndex(state.channelsLoopQue.third);
-			return nextIndex;
+		GetLoopObjectForSecond: (state, getters) => (index) => {
+			var name = state.channelsLoopQue.second.list[index];
+			if(!name){
+				return null;
+			}
+			return {name: name, channel: getters.channel(name)};
+		},
+		GetThirdLoopIndexs: (state) => {
+			return state.channelsLoopQue.third.list.length;
+		},
+		GetLoopObjectForThird: (state, getters) => (index) => {
+			var name = state.channelsLoopQue.third.list[index];
+			if(!name){
+				return null;
+			}
+			return {name: name, channel: getters.channel(name)};
 		}
 	},
 	mutations: {
@@ -228,15 +229,6 @@ export default new Vuex.Store({
 		setActiveChannel: function (state, channelName) {
 			var channelNames = GetterChannelsFromUrl(channelName);
 			state.activeChannel = channelNames;
-		},
-		SetNextMainLoopIndex: function (state, index) {
-			state.channelsLoopQue.main.index = index;
-		},
-		SetNextSecondLoopIndex: function (state, index) {
-			state.channelsLoopQue.second.index = index;
-		},
-		SetNextThirdLoopIndex: function (state, index) {
-			state.channelsLoopQue.third.index = index;
 		}
 	}
 });
