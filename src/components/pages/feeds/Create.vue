@@ -21,7 +21,7 @@
                     </div>
                     <div class="form-group">
                         <label for="Image">Parent channel</label>
-                        <input type="text" class="form-control" id="Image" placeholder="eks.." v-model="stage1.ParentChannel">
+                        <input type="text" class="form-control" id="ParentChannel" placeholder="eks.." v-model="stage1.ParentChannel">
                     </div>
                     <button type="submit" class="btn btn-primary" @click="NextStep()">Next Step</button>
                 </div>
@@ -70,6 +70,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary" v-if="stage2.valid" @click="NextStep()">Next Step</button>
                     <button type="submit" class="btn btn-primary" @click="Test()">test</button>
+                    <button type="submit" class="btn btn-primary" @click="ByPass()">ByPass</button>
                 </div>
                 <div class="col-md-6">
                     <section>
@@ -100,18 +101,18 @@ export default {
             error: '',
             stage: 1,
             stage1: {
-                rssUrl: "https://www.dr.dk/nyheder/service/feeds/allenyheder",
+                rssUrl: "http://feeds.tv2.dk/nyhederne_seneste/rss",
                 name:"test",
-                Image:"https://digitalt.tv/wp-content/uploads/2017/10/dr1logo.png",
-                ParentChannel: null
+                Image:"",
+                ParentChannel: "2"
             },
             stage2: {
                 loopTag: 'item',
-                image: 'DR:XmlImageArticle DR:ImageUri620x349',
+                image: 'description | img',
                 title: 'title',
                 demo: '',
                 valid: false,
-                attr: 'tag',
+                attr: 'attr',//'tag',
                 attrTag: 'src',
                 link: 'link',
                 Date: 'pubDate',
@@ -159,6 +160,9 @@ export default {
                     });
                 }
             }
+        },
+        ByPass: function () {
+            this.stage2.valid = true;
         },
         Test: function () {
             var demo = "";

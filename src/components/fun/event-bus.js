@@ -52,7 +52,7 @@ export const XmlPaster = {
     	}
     }
 };
-export const BaseUrl = 'http://localhost/News-Feed'; //http://localhost/News-Feed/  -- 
+export const BaseUrl = 'http://localhost/News-Feed'; // http://localhost/News-Feed -- http://stojier.dk
 export const BaseFeedUrlTag = 'f/';
 export const RrsData = {
     

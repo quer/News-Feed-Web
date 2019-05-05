@@ -61,9 +61,9 @@ export default new Vuex.Store({
 		channels: [], //{ "name": "", "icon": "","rssFeedUrl": "","decode": {},"loopTag": "item","convertImage": "1","childFeeds": [ ...self]} and {LastFetchDateTime: null, feedItem: []} if have feed 
 		channelsLoopQue: {
 			isRuning: false,
-			main: { list: [], loopTime: 6000 },
-			second: { list: [], loopTime: 12000 },
-			third: { list: [], loopTime: 24000 }
+			main: { list: [], loopTime: 60000 },
+			second: { list: [], loopTime: 120000 },
+			third: { list: [], loopTime: 240000 }
 		},
 		activeChannel: {
 			main: null,

@@ -11,18 +11,17 @@
         props: ['name', 'mainLink', 'link'],
         data () {
             return {
-                url: BaseFeedUrlTag + this.mainLink + "/" + this.link
             }
         },
         methods: {
             chanceChannel: function () {
                 event.preventDefault();
-                EventBus.$emit('route-chance', this.url);
+                EventBus.$emit('route-chance', BaseFeedUrlTag + this.mainLink + "/" + this.link);
             }
         },
         computed: {
             active () {
-                return this.$store.getters.channelActiveSecondStatus(this.url);
+                return this.$store.getters.channelActiveSecondStatus(BaseFeedUrlTag + this.mainLink + "/" + this.link);
             }
         }
     }
